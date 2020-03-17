@@ -1,0 +1,92 @@
+*&---------------------------------------------------------------------*
+*& Report  ZTMP_TOMAS_006
+*&---------------------------------------------------------------------*
+*& Clases y Objetos
+*&---------------------------------------------------------------------*
+
+REPORT ztmp_tomas_006.
+
+*----------------------------------------------------------------------*
+*       CLASS prueba DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS cl_prueba DEFINITION.
+
+  PUBLIC SECTION.
+    DATA: ancho TYPE i.
+    METHODS: suma IMPORTING  value(a) TYPE i
+                             value(b) TYPE i
+                  RETURNING  value(result) TYPE i.
+
+ENDCLASS.                    "prueba DEFINITION
+
+*----------------------------------------------------------------------*
+*       CLASS cl_prueba_child DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS cl_prueba_child DEFINITION INHERITING FROM cl_prueba.
+
+  PUBLIC SECTION.
+    METHODS: resta IMPORTING value(a) TYPE i
+                             value(b) TYPE i
+                   RETURNING value(result) TYPE i.
+
+ENDCLASS.                    "cl_prueba_child DEFINITION
+
+*----------------------------------------------------------------------*
+*       CLASS prueba IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS cl_prueba IMPLEMENTATION.
+  METHOD suma.
+    result = a + b.
+  ENDMETHOD.                    "set_ancho
+ENDCLASS.                    "cl_medidas IMPLEMENTATION
+
+*----------------------------------------------------------------------*
+*       CLASS cl_prueba_child IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS cl_prueba_child IMPLEMENTATION.
+  METHOD resta.
+    result = a - b.
+  ENDMETHOD.                    "resta
+ENDCLASS.                    "cl_prueba_child IMPLEMENTATION
+
+DATA: gr_local TYPE REF TO cl_prueba,
+      lv_result TYPE i,
+      gr_local_child TYPE REF TO cl_prueba_child.
+
+START-OF-SELECTION.
+
+  CREATE OBJECT: gr_local, gr_local_child.
+
+  gr_local->ancho = 9.
+  gr_local_child->ancho = 9.
+
+  CALL METHOD gr_local->suma(
+    EXPORTING
+      a      = 1
+      b      = 9
+    RECEIVING
+      result = lv_result ).
+
+  CALL METHOD gr_local_child->resta(
+    EXPORTING
+      a      = lv_result
+      b      = 9
+    RECEIVING
+      result = lv_result ).
+
+  CALL METHOD gr_local_child->suma(
+    EXPORTING
+      a      = lv_result
+      b      = 9
+    RECEIVING
+      result = lv_result ).
+
+  WRITE / lv_result.
